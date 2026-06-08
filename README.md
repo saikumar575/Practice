@@ -1,114 +1,148 @@
-AWS EC2 Load Balancer Project Documentation
-Project Title
+# AWS EC2 Load Balancer 
 
-High Availability Web Application Deployment Using AWS EC2 and Application Load Balancer (ALB)
+## Project Title: Load Balancer Simulation System
 
-1. Project Objective
+This project demonstrates how a load balancer distributes incoming client requests across multiple backend servers to improve performance and reliability. The system simulates traffic routing using different algorithms such as Round Robin and Least Connections. It also includes basic server health checking to ensure requests are only sent to active servers. The goal is to understand how load balancing improves scalability and prevents server overload.
+
+## Project Objective
 
 The objective of this project is to deploy a highly available web application using multiple EC2 instances behind an AWS Load Balancer. The Load Balancer distributes incoming traffic across multiple servers, ensuring fault tolerance, scalability, and high availability.
 
-2. Architecture Overview
-Components
-Virtual Private Cloud (VPC)
-Public Subnets
-Internet Gateway
-Security Groups
-EC2 Instances
-Application Load Balancer (ALB)
-Target Group
-Route 53 (Optional)
-CloudWatch Monitoring
-Architecture Diagram
-                Internet
-                    |
-                    |
-         Application Load Balancer
-                    |
-       -------------------------
-       |                       |
-       |                       |
-   EC2 Instance 1         EC2 Instance 2
-       |                       |
-       -------------------------
-                |
-             VPC Network
-3. Prerequisites
+## Architecture Diagram
 
-Before starting, ensure the following:
+                          Internet
+                              |
+                              |
+                  +----------------------+
+                  |  Application Load    |
+                  |      Balancer (ALB)  |
+                  +----------+-----------+
+                             |
+             -----------------------------------
+             |                                 |
+             |                                 |
+   +-------------------+           +-------------------+
+   |   EC2 Instance 1  |           |   EC2 Instance 2  |
+   |   Apache/Nginx    |           |   Apache/Nginx    |
+   |   Web Server      |           |   Web Server      |
+   +-------------------+           +-------------------+
+             |                                 |
+             -----------------------------------
+                             |
+                    +----------------+
+                    |      VPC       |
+                    |  10.0.0.0/16   |
+                    +----------------+
+
+            
+# Components
+
+Virtual Private Cloud (VPC)
+
+Public Subnets
+
+Internet Gateway
+
+Security Groups
+
+EC2 Instances
+
+Application Load Balancer (ALB)
+
+Target Group
+
+Route 53 (Optional)
+
+CloudWatch Monitoring  
+
+# Prerequisites
 
 AWS Account
-Active AWS Account
-IAM User with EC2 and ELB permissions
-Knowledge Requirements
+
 Basic Linux commands
+
 AWS EC2 concepts
+
 Networking fundamentals
+
 Resources Required
+
 Resource	Quantity
+
 EC2 Instances	2
+
 Load Balancer	1
+
 Security Groups	2
+
 Target Group	1
+
 VPC	1
-4. Step 1: Launch EC2 Instances
-Login to AWS Console
 
-Navigate to:
+# Launch EC2 Instances
 
-AWS Console → EC2 → Launch Instance
+Login to AWS Console → EC2 → Launch Instance
 
-Configure Instance 1
-Parameter	Value
-Name	WebServer-1
+# Configure Instance 1
+
+Name	: WebServer-1
+
 AMI	Amazon Linux 2023
-Instance Type	t2.micro
-Key Pair	Existing/New
-Security Group	Web-SG
+
+Instance Type :	t2.micro
+
+Key Pair	: Existing/New
+
+Security Group	: Web-SG
 
 Launch the instance.
 
-Configure Instance 2
-Parameter	Value
-Name	WebServer-2
+# Configure Instance 2
+
+Name	: WebServer-2
+
 AMI	Amazon Linux 2023
-Instance Type	t2.micro
+
+Instance Type	: t2.micro
+
 Key Pair	Existing/New
-Security Group	Web-SG
+
+Security Group	: Web-SG
 
 Launch the instance.
 
-5. Step 2: Configure Security Group
+# Configure Security Group
+
 Create Security Group
 
-Name:
+Name: Web-SG
 
-Web-SG
 Inbound Rules
+
 Type	Port	Source
+
 SSH	22	My IP
+
 HTTP	80	Anywhere
+
 HTTPS	443	Anywhere
+
 Outbound Rules
 
 Allow All Traffic
 
-6. Step 3: Install Web Server
+# Install Web Server
 
 Connect to each EC2 instance using SSH.
 
 ssh -i key.pem ec2-user@Public-IP
 
-Update Packages:
-
 sudo yum update -y
-
-Install Apache:
 
 sudo yum install httpd -y
 
-Start Apache:
-
 sudo systemctl start httpd
+
 sudo systemctl enable httpd
 
 Create Sample Page on Server 1:
@@ -122,17 +156,21 @@ echo "<h1>Server 2</h1>" | sudo tee /var/www/html/index.html
 Verify:
 
 http://<instance-public-ip>
-7. Step 4: Create Target Group
 
-Navigate:
+# Create Target Group
 
 EC2 → Target Groups → Create Target Group
 
 Configuration
+
 Parameter	Value
+
 Target Type	Instances
+
 Protocol	HTTP
+
 Port	80
+
 VPC	Default/Custom
 
 Click Next.
@@ -142,6 +180,7 @@ Register Targets
 Select:
 
 WebServer-1
+
 WebServer-2
 
 Click:
@@ -150,34 +189,42 @@ Include as pending below
 
 Create Target Group.
 
-8. Step 5: Create Application Load Balancer
-
-Navigate:
+# Create Application Load Balancer
 
 EC2 → Load Balancers → Create Load Balancer
 
-Select:
-
 Application Load Balancer
+
 Basic Configuration
+
 Parameter	Value
+
 Name	Web-ALB
+
 Scheme	Internet-facing
+
 IP Type	IPv4
+
 Network Mapping
 
 Select:
 
 VPC
+
 Two Availability Zones
+
 Public Subnets
+
 Security Group
 
 Attach:
 
 Web-SG
+
 Listener
+
 HTTP : 80
+
 Target Group
 
 Select:
@@ -187,9 +234,8 @@ Web-Target-Group
 Click:
 
 Create Load Balancer
-9. Step 6: Verify Health Checks
 
-Navigate:
+# Verify Health Checks
 
 Target Groups → Targets
 
@@ -200,8 +246,10 @@ Healthy
 Expected Output:
 
 WebServer-1   Healthy
+
 WebServer-2   Healthy
-10. Step 7: Test Load Balancing
+
+# Test Load Balancing
 
 Copy ALB DNS Name:
 
@@ -221,48 +269,60 @@ Server 2
 
 depending on load balancing algorithm.
 
-11. Step 8: Configure Auto Scaling (Optional)
-
-Navigate:
+# Configure Auto Scaling (Optional)
 
 EC2 → Auto Scaling Groups
+
 Create Launch Template
 
 Use:
 
 Amazon Linux 2023
+
 t2.micro
+
 Web-SG
+
 Create Auto Scaling Group
+
 Parameter	Value
+
 Desired Capacity	2
+
 Minimum Capacity	2
+
 Maximum Capacity	5
 
 Attach to:
 
 Web-ALB
-12. Step 9: Monitoring
 
-Navigate:
+# Monitoring
 
 CloudWatch
 
-Monitor:
-
 CPU Utilization
+
 Request Count
+
 Healthy Host Count
+
 Network Traffic
 
-Important Metrics:
+# Important Metrics
 
 Metric	Purpose
+
 CPUUtilization	Server load
+
 RequestCount	Traffic
+
 HealthyHostCount	Availability
+
 TargetResponseTime	Performance
-13. Testing Scenarios
+
+# Testing Scenarios
+
 Test 1: Instance Failure
 
 Stop one EC2 instance.
@@ -288,13 +348,21 @@ sudo systemctl stop httpd
 Expected:
 
 Instance marked unhealthy.
-14. Troubleshooting
+
+# Troubleshooting
+
 Issue	Solution
+
 Target unhealthy	Check HTTP service
+
 Timeout	Verify Security Group
+
 503 Error	Verify Target Group
+
 No response	Check Listener Rules
+
 SSH failure	Verify Key Pair and Port 22
-15. Project Outcome
+
+# Project Outcome
 
 Successfully deployed a highly available web application using AWS EC2 instances behind an Application Load Balancer. The Load Balancer distributes incoming traffic among multiple servers, improving reliability, scalability, and fault tolerance.
