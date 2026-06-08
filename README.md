@@ -10,29 +10,18 @@ The objective of this project is to deploy a highly available web application us
 
 ## Architecture Diagram
 
-                          Internet
-                              |
-                              |
-                  +----------------------+
-                  |  Application Load    |
-                  |      Balancer (ALB)  |
-                  +----------+-----------+
-                             |
-             -----------------------------------
-             |                                 |
-             |                                 |
-   +-------------------+           +-------------------+
-   |   EC2 Instance 1  |           |   EC2 Instance 2  |
-   |   Apache/Nginx    |           |   Apache/Nginx    |
-   |   Web Server      |           |   Web Server      |
-   +-------------------+           +-------------------+
-             |                                 |
-             -----------------------------------
-                             |
-                    +----------------+
-                    |      VPC       |
-                    |  10.0.0.0/16   |
-                    +----------------+
+```mermaid
+graph TD
+    Internet --> ALB[Application Load Balancer]
+
+    ALB --> EC1[EC2 Instance 1<br/>Apache/Nginx]
+    ALB --> EC2[EC2 Instance 2<br/>Apache/Nginx]
+
+    subgraph VPC[10.0.0.0/16]
+        EC1
+        EC2
+    end
+```
 
             
 # Components
