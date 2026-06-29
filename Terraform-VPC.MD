@@ -256,15 +256,3 @@ terraform destroy
 * Infrastructure as Code (IaC)
 
 ---
-
-## 👨‍💻 Author
-
-**Your Name**
-
-GitHub: https://github.com/your-username
-
-LinkedIn: https://linkedin.com/in/your-profile
-
----
-
-## ⭐ If you found this project helpful, consider giving it a star on GitHub!
