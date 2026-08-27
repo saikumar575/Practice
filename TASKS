@@ -1,0 +1,18 @@
+Ansible
+1. Install and configure Nginx
+2. Create Linux users and SSH access
+3. Deploy an application from Git
+4. Manage configuration files
+7. Restart a service only when configuration changes
+8. Deploy Docker containers
+9. Backup application configuration
+
+Terraform
+1. Create a VM/EC2 instance
+2. Create a VPC/network
+3. Create security groups/firewall rules
+4. Create an S3 bucket
+5. Create an RDS database
+6. Create an Application Load Balancer
+Create multiple servers using count
+11. Create IAM User and roles and policies
